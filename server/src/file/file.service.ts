@@ -30,7 +30,15 @@ export class FileService {
   }
 
   removeFile (filename: string) {
-
+    const filePath = path.resolve(__dirname, '..', 'static', filename);
+    if (fs.existsSync(filePath)) {
+      fs.unlink(filePath, err => {
+        if (err) {
+          console.error(err);
+          throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      });
+    }
   }
 
 }
