@@ -1,4 +1,5 @@
 import { ITrack } from 'pages/tracks/types';
+import { HYDRATE } from 'next-redux-wrapper';
 
 export interface IPlayerState {
   active: null | ITrack;
@@ -45,10 +46,17 @@ interface ISetVolumeAction {
   payload: number;
 }
 
+
+interface IHydrate {
+  type: typeof HYDRATE;
+  payload: { count: number };
+}
+
 export type TPlayerAction =
   | IPlayAction
   | IPauseAction
   | ISetActiveAction
   | ISetDurationAction
   | ISetCurrentTimeAction
-  | ISetVolumeAction;
+  | ISetVolumeAction
+  | IHydrate;

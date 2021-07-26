@@ -18,7 +18,7 @@ export const TrackProgress: FC<TProps> = ({
     <input
       type="range"
       onChange={onChange}
-      min={left}
+      min={0}
       max={right}
       value={left}
     />
