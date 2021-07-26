@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react';
+import React, { FC, ReactElement, MouseEvent } from 'react';
 import { Card, Grid, IconButton } from '@material-ui/core';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -28,7 +28,7 @@ export const TrackItem: FC<TProps> = ({
       onClick={() => router.push(`/tracks/${track._id}`)}
     >
       <IconButton
-        onClick={(e: MouseEvent) => e.stopPropagation()}
+        onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
       >
         {active ? (
           <PauseIcon />
@@ -55,7 +55,7 @@ export const TrackItem: FC<TProps> = ({
       )}
       <IconButton
         className={styles.track__delete}
-        onClick={(e: MouseEvent) => e.stopPropagation()}
+        onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
       >
         <DeleteIcon />
       </IconButton>
