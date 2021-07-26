@@ -1,12 +1,15 @@
-import type { AppProps } from 'next/app';
+import React, { FC } from 'react';
+import { AppProps } from 'next/app';
 
 import '@Styles/common.sass';
 
-function MyApp ({
+import { wrapper } from 'store';
+
+const WrappedApp: FC<AppProps> = ({
   Component,
   pageProps,
-}: AppProps) {
-  return <Component {...pageProps} />;
-}
+}) => (
+  <Component {...pageProps} />
+);
 
-export default MyApp;
+export default wrapper.withRedux(WrappedApp);
