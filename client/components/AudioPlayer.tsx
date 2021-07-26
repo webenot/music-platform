@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, MouseEvent, ReactElement } from 'react';
+import React, { ChangeEvent, FC, ReactElement, useCallback, useEffect } from 'react';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import VolumeUpIcon from '@material-ui/icons/VolumeUp';
@@ -9,12 +9,16 @@ import styles from '@Styles/AudioPlayer.module.sass';
 import { ITrack } from 'pages/tracks/types';
 
 import { TrackProgress } from 'components/TrackProgress';
+import { useTypedSelector } from 'hooks/useTypedSelector';
+import { useActions } from 'hooks/useActions';
 
 type TProps = {
   children?: never;
 }
 
-export const AudioPlayer: FC<TProps> = (): ReactElement => {
+let audio: any;
+
+export const AudioPlayer: FC<TProps> | null = (): ReactElement | null => {
   const track: ITrack = {
     _id: '3',
     name: 'Track 3',
@@ -25,16 +29,81 @@ export const AudioPlayer: FC<TProps> = (): ReactElement => {
     listens: 3,
     comments: [],
   };
-  const active = false;
+
+  const {
+    pause,
+    active,
+    volume,
+    duration,
+    currentTime,
+  } = useTypedSelector(state => state.player);
+
+  const {
+    pauseTrack,
+    playTrack,
+    setVolume,
+    setCurrentTime,
+    setDuration,
+  } = useActions();
+
+  const setAudio = useCallback(() => {
+    if (audio && active) {
+      audio.pause();
+      audio.src = active.audio;
+      audio.load();
+      audio.volume = 0.5;
+      audio.currentTime = 0;
+      audio.onloadedmetadata = () => setDuration(Math.ceil(audio.duration) || 0);
+      audio.play();
+    }
+  }, [ active ]);
+
+  useEffect(() => {
+    if (!audio) {
+      audio = new Audio(track.audio);
+      audio.ontimeupdate = () => setCurrentTime(Math.ceil(audio.currentTime) || 0);
+    }
+    setAudio();
+    playTrack();
+  }, [ active ]);
+
+  const playHandler = useCallback(() => {
+    if (pause) {
+      playTrack();
+      audio?.play();
+    } else {
+      pauseTrack();
+      audio?.pause();
+    }
+  }, [ pause ]);
+
+  const changeVolumeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const volume = Number(e.target.value);
+    setVolume(volume);
+    if (audio) {
+      audio.volume = volume / 100;
+    }
+  }, []);
+
+  const changeProgressHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const currentTime = Number(e.target.value);
+    setCurrentTime(currentTime);
+    if (audio) {
+      audio.currentTime = currentTime;
+    }
+  }, []);
+
+  if (!active) return null;
+
   return (
     <div className={styles.player}>
       <IconButton
-        onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
+        onClick={playHandler}
       >
-        {active ? (
-          <PauseIcon />
-        ) : (
+        {pause ? (
           <PlayArrowIcon />
+        ) : (
+          <PauseIcon />
         )}
       </IconButton>
       <Grid
@@ -42,13 +111,13 @@ export const AudioPlayer: FC<TProps> = (): ReactElement => {
         container
         direction="column"
       >
-        <div>{track.name}</div>
-        <div className={styles.player__artist}>{track.artist}</div>
+        <div>{active?.name}</div>
+        <div className={styles.player__artist}>{active?.artist}</div>
       </Grid>
-      <TrackProgress left={0} right={100} onChange={(e: ChangeEvent<HTMLInputElement>) => {}} />
+      <TrackProgress left={currentTime} right={duration} onChange={changeProgressHandler} />
       <div className={styles.player__volume}>
         <VolumeUpIcon />
-        <TrackProgress left={0} right={100} onChange={(e: ChangeEvent<HTMLInputElement>) => {}} />
+        <TrackProgress left={volume} right={100} onChange={changeVolumeHandler} />
       </div>
     </div>
   );

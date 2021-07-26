@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, MouseEvent } from 'react';
+import React, { FC, ReactElement, MouseEvent, useCallback } from 'react';
 import { Card, Grid, IconButton } from '@material-ui/core';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -8,6 +8,7 @@ import styles from '@Styles/TrackItem.module.sass';
 
 import { ITrack } from 'pages/tracks/types';
 import { useRouter } from 'next/router';
+import { useActions } from 'hooks/useActions';
 
 type TProps = {
   children?: never;
@@ -22,13 +23,22 @@ export const TrackItem: FC<TProps> = ({
 
   const router = useRouter();
 
+  const { setActiveTrack } = useActions();
+
+  const playClickHandle = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (!active) {
+      setActiveTrack(track);
+    }
+  }, [ active ]);
+
   return (
     <Card
       className={styles.track}
       onClick={() => router.push(`/tracks/${track._id}`)}
     >
       <IconButton
-        onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
+        onClick={playClickHandle}
       >
         {active ? (
           <PauseIcon />
@@ -61,6 +71,6 @@ export const TrackItem: FC<TProps> = ({
       </IconButton>
     </Card>
   );
-}
+};
 
 TrackItem.defaultProps = { active: false };

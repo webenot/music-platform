@@ -1,11 +1,13 @@
+import { HYDRATE } from 'next-redux-wrapper';
+
 import { TPlayerAction, TPlayerActions, IPlayerState } from 'types/player.type';
 
 const initialState: IPlayerState = {
   active: null,
-  volume: 0,
+  volume: 50,
   duration: 0,
   currentTime: 0,
-  pause: false,
+  pause: true,
 };
 
 export const playerReducer = (state = initialState, action: TPlayerAction): IPlayerState => {
@@ -41,6 +43,11 @@ export const playerReducer = (state = initialState, action: TPlayerAction): IPla
       return {
         ...state,
         volume: action.payload,
+      };
+    case HYDRATE:
+      return {
+        ...state,
+        ...action.payload,
       };
     default: return state;
   }
