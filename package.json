@@ -1,0 +1,24 @@
+{
+  "name": "music-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webenot/music-platform.git"
+  },
+  "author": "Webenot <webenot@mail.ua>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/webenot/music-platform/issues"
+  },
+  "homepage": "https://github.com/webenot/music-platform#readme",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
+    "eslint": "^7.31.0"
+  }
+}
