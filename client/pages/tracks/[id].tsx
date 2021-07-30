@@ -6,8 +6,9 @@ import { Button, Grid, TextField, Divider } from '@material-ui/core';
 import styles from '@Styles/[id].module.sass';
 
 import { MainLayout } from 'layouts/MainLayout';
-import { ITrack } from 'pages/tracks/types/track.type';
+import { IComment, ITrack } from 'pages/tracks/types/track.type';
 import { useInput } from 'hooks/useInput';
+import { CommentsList } from 'components/CommentsList';
 
 type TProps = {
   children?: never;
@@ -51,7 +52,7 @@ const TrackDetails: FC<TProps> = ({ serverTrack }: TProps): ReactElement => {
           headers: { 'Content-Type': 'application/json' },
         },
       );
-      const result: ITrack = await response.json();
+      const result: IComment = await response.json();
       setTrack({
         ...track,
         comments: [ ...track.comments, result ],
@@ -123,16 +124,7 @@ const TrackDetails: FC<TProps> = ({ serverTrack }: TProps): ReactElement => {
             onClick={addCommentHandler}
           >Send</Button>
         </Grid>
-        <div className={styles.comments__list}>
-          {track.comments.map(comment => (
-            <div
-              key={`comment-${comment._id}`}
-            >
-              <div>Author - {comment.username}</div>
-              <div>{comment.text}</div>
-            </div>
-          ))}
-        </div>
+        <CommentsList comments={track.comments} />
       </div>
     </MainLayout>
   );
