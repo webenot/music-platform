@@ -24,7 +24,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 const Tracks = () => {
 
   const [ query, setQuery ] = useState<string>('');
-  const [ timer, setTimer ] = useState(null);
+  const [ timer, setTimer ] = useState<any>(null);
 
   const router = useRouter();
 
