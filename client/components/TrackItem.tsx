@@ -9,6 +9,9 @@ import styles from '@Styles/TrackItem.module.sass';
 import { ITrack } from 'pages/tracks/types/track.type';
 import { useRouter } from 'next/router';
 import { useActions } from 'hooks/useActions';
+import { useDispatch } from 'react-redux';
+import { fetchTracks } from 'store/actions/tracks.actions';
+import { TNextThunkDispatch } from 'store';
 
 type TProps = {
   children?: never;
@@ -25,12 +28,28 @@ export const TrackItem: FC<TProps> = ({
 
   const { setActiveTrack } = useActions();
 
+  const dispatch = useDispatch() as TNextThunkDispatch;
+
   const playClickHandle = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (!active) {
       setActiveTrack(track);
     }
   }, [ active ]);
+
+  const deleteTrackHandler = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (!confirm('Do you really want to delete this track?')) return false;
+    try {
+      await fetch(
+        `http://localhost:4500/tracks/${track._id}`,
+        { method: 'DELETE' },
+      );
+      dispatch(await fetchTracks());
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   return (
     <Card
@@ -65,7 +84,7 @@ export const TrackItem: FC<TProps> = ({
       )}
       <IconButton
         className={styles.track__delete}
-        onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
+        onClick={deleteTrackHandler}
       >
         <DeleteIcon />
       </IconButton>
