@@ -46,6 +46,7 @@ export class TrackService {
       ],
     };
     return this.trackModel.find(queryFilter)
+      .sort({ _id: -1 })
       .skip(Number(offset))
       .limit(Number(count));
   }
