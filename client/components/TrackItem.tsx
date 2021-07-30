@@ -6,7 +6,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import styles from '@Styles/TrackItem.module.sass';
 
-import { ITrack } from 'pages/tracks/types';
+import { ITrack } from 'pages/tracks/types/track.type';
 import { useRouter } from 'next/router';
 import { useActions } from 'hooks/useActions';
 
@@ -48,7 +48,7 @@ export const TrackItem: FC<TProps> = ({
       </IconButton>
       {track.picture ? (
         <img
-          src={track.picture}
+          src={`http://localhost:4500/${track.picture}`}
           alt={track.name}
         />
       ) : null}

@@ -1,7 +1,7 @@
 import React, { FC, ReactElement } from 'react';
 import { Grid, Box } from '@material-ui/core';
 
-import { ITrack } from 'pages/tracks/types';
+import { ITrack } from 'pages/tracks/types/track.type';
 import { TrackItem } from 'components/TrackItem';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 

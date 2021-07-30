@@ -1,6 +1,4 @@
-import { HYDRATE } from 'next-redux-wrapper';
-
-import { TPlayerAction, TPlayerActions, IPlayerState } from 'types/player.type';
+import { TPlayerAction, EPlayerActions, IPlayerState } from 'types/player.type';
 
 const initialState: IPlayerState = {
   active: null,
@@ -12,42 +10,37 @@ const initialState: IPlayerState = {
 
 export const playerReducer = (state = initialState, action: TPlayerAction): IPlayerState => {
   switch (action.type) {
-    case TPlayerActions.PLAY:
+    case EPlayerActions.PLAY:
       return {
         ...state,
         pause: false,
       };
-    case TPlayerActions.PAUSE:
+    case EPlayerActions.PAUSE:
       return {
         ...state,
         pause: true,
       };
-    case TPlayerActions.SET_ACTIVE:
+    case EPlayerActions.SET_ACTIVE:
       return {
         ...state,
         active: action.payload,
         duration: 0,
         currentTime: 0,
       };
-    case TPlayerActions.SET_CURRENT_TIME:
+    case EPlayerActions.SET_CURRENT_TIME:
       return {
         ...state,
         currentTime: action.payload,
       };
-    case TPlayerActions.SET_DURATION:
+    case EPlayerActions.SET_DURATION:
       return {
         ...state,
         duration: action.payload,
       };
-    case TPlayerActions.SET_VOLUME:
+    case EPlayerActions.SET_VOLUME:
       return {
         ...state,
         volume: action.payload,
-      };
-    case HYDRATE:
-      return {
-        ...state,
-        ...action.payload,
       };
     default: return state;
   }
