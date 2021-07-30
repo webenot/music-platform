@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { GetServerSidePropsResult } from 'next';
 import { Store } from 'redux';
 import { useRouter } from 'next/router';
-import { Grid, Card, Button, Box } from '@material-ui/core';
+import { Grid, Card, Button, Box, TextField } from '@material-ui/core';
+
+import styles from '@Styles/tracks.module.sass';
 
 import { MainLayout } from 'layouts/MainLayout';
 import { TrackList } from 'components/TrackList';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 import { TNextThunkDispatch, wrapper } from 'store';
-import { fetchTracks } from 'store/actions/tracks.actions';
+import { fetchTracks, searchTracks } from 'store/actions/tracks.actions';
 import { TRootState } from 'store/reducers';
+import { useDispatch } from 'react-redux';
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store: Store<TRootState>): Promise<GetServerSidePropsResult<void>> => async () => {
@@ -19,12 +22,28 @@ export const getServerSideProps = wrapper.getServerSideProps(
 );
 
 const Tracks = () => {
+
+  const [ query, setQuery ] = useState<string>('');
+  const [ timer, setTimer ] = useState(null);
+
   const router = useRouter();
 
   const {
     tracks,
     error,
   } = useTypedSelector(state => state.tracks);
+
+  const dispatch = useDispatch() as TNextThunkDispatch;
+
+  const searchChangeHandler = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    if (timer) {
+      clearTimeout(timer);
+    }
+    setTimer(setTimeout(async () => {
+      await dispatch(await searchTracks(e.target.value));
+    }, 500));
+  }, [ timer ]);
 
   if (error) {
     return (
@@ -44,6 +63,12 @@ const Tracks = () => {
               <Button type="button" onClick={() => router.push('/tracks/create')}>Upload</Button>
             </Grid>
           </Box>
+          <TextField
+            fullWidth
+            value={query}
+            onChange={searchChangeHandler}
+            className={styles.search}
+          />
           <TrackList tracks={tracks} />
         </Card>
       </Grid>
