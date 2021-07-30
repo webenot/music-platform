@@ -6,9 +6,11 @@ type TProps = {
   children: ReactNode;
   setFile: Function;
   accept: string;
+  file: File | null;
 }
 
 export const FileUpload: FC<TProps> = ({
+  file,
   setFile,
   accept,
   children,
@@ -33,6 +35,7 @@ export const FileUpload: FC<TProps> = ({
         onChange={fileChangeHandle}
       />
       {children}
+      <div>{file?.name}</div>
     </div>
   );
 };
