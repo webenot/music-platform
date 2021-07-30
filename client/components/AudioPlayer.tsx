@@ -6,7 +6,7 @@ import { Grid, IconButton } from '@material-ui/core';
 
 import styles from '@Styles/AudioPlayer.module.sass';
 
-import { ITrack } from 'pages/tracks/types';
+import { ITrack } from 'pages/tracks/types/track.type';
 
 import { TrackProgress } from 'components/TrackProgress';
 import { useTypedSelector } from 'hooks/useTypedSelector';
@@ -49,12 +49,12 @@ export const AudioPlayer: FC<TProps> | null = (): ReactElement | null => {
   const setAudio = useCallback(() => {
     if (audio && active) {
       audio.pause();
-      audio.src = active.audio;
+      pauseTrack();
+      audio.src = `http://localhost:4500/${active.audio}`;
       audio.load();
       audio.volume = 0.5;
       audio.currentTime = 0;
       audio.onloadedmetadata = () => setDuration(Math.ceil(audio.duration) || 0);
-      audio.play();
     }
   }, [ active ]);
 
@@ -64,7 +64,6 @@ export const AudioPlayer: FC<TProps> | null = (): ReactElement | null => {
       audio.ontimeupdate = () => setCurrentTime(Math.ceil(audio.currentTime) || 0);
     }
     setAudio();
-    playTrack();
   }, [ active ]);
 
   const playHandler = useCallback(() => {

@@ -5,7 +5,7 @@ import { Button, Grid, TextField, Divider } from '@material-ui/core';
 import styles from '@Styles/[id].module.sass';
 
 import { MainLayout } from 'layouts/MainLayout';
-import { ITrack } from 'pages/tracks/types';
+import { ITrack } from 'pages/tracks/types/track.type';
 
 type TProps = {
   children?: never;

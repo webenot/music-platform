@@ -1,5 +1,5 @@
-import { ITrack } from 'pages/tracks/types';
-import { HYDRATE } from 'next-redux-wrapper';
+import { ITrack } from 'pages/tracks/types/track.type';
+import { IHydrate } from 'types/hydrate.type';
 
 export interface IPlayerState {
   active: null | ITrack;
@@ -9,7 +9,7 @@ export interface IPlayerState {
   pause: boolean;
 }
 
-export enum TPlayerActions {
+export enum EPlayerActions {
   PLAY = 'PLAY',
   PAUSE = 'PAUSE',
   SET_ACTIVE = 'SET_ACTIVE',
@@ -19,37 +19,31 @@ export enum TPlayerActions {
 }
 
 interface IPlayAction {
-  type: TPlayerActions.PLAY;
+  type: EPlayerActions.PLAY;
 }
 
 interface IPauseAction {
-  type: TPlayerActions.PAUSE;
+  type: EPlayerActions.PAUSE;
 }
 
 interface ISetActiveAction {
-  type: TPlayerActions.SET_ACTIVE;
+  type: EPlayerActions.SET_ACTIVE;
   payload: ITrack;
 }
 
 interface ISetDurationAction {
-  type: TPlayerActions.SET_DURATION;
+  type: EPlayerActions.SET_DURATION;
   payload: number;
 }
 
 interface ISetCurrentTimeAction {
-  type: TPlayerActions.SET_CURRENT_TIME;
+  type: EPlayerActions.SET_CURRENT_TIME;
   payload: number;
 }
 
 interface ISetVolumeAction {
-  type: TPlayerActions.SET_VOLUME;
+  type: EPlayerActions.SET_VOLUME;
   payload: number;
-}
-
-
-interface IHydrate {
-  type: typeof HYDRATE;
-  payload: { count: number };
 }
 
 export type TPlayerAction =
