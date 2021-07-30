@@ -35,7 +35,7 @@ const Tracks = () => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout title="Tracks List">
       <Grid container justifyContent="center">
         <Card className="card">
           <Box p={3}>

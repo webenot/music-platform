@@ -1,5 +1,6 @@
 import React, { FC, ReactElement, useCallback, useState } from 'react';
 import { GetServerSideProps } from 'next';
+import { ParsedUrlQuery } from 'querystring';
 import { useRouter } from 'next/router';
 import { Button, Grid, TextField, Divider } from '@material-ui/core';
 
@@ -15,7 +16,7 @@ type TProps = {
   serverTrack: ITrack;
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }: ParsedUrlQuery) => {
 
   try {
     const response = await fetch(`http://localhost:4500/tracks/${params.id}`);
@@ -66,7 +67,7 @@ const TrackDetails: FC<TProps> = ({ serverTrack }: TProps): ReactElement => {
   }, [ username, text, track ]);
 
   return (
-    <MainLayout>
+    <MainLayout title={track.name}>
       <Button
         className={styles.button}
         type="button"
