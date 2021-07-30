@@ -67,7 +67,10 @@ const TrackDetails: FC<TProps> = ({ serverTrack }: TProps): ReactElement => {
   }, [ username, text, track ]);
 
   return (
-    <MainLayout title={`${track.name} (${track.artist})`}>
+    <MainLayout
+      title={`${track.name} (${track.artist})`}
+      keywords={`${track.name},${track.artist}`}
+    >
       <Button
         className={styles.button}
         type="button"
