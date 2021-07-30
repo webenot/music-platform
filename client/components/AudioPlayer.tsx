@@ -6,8 +6,6 @@ import { Grid, IconButton } from '@material-ui/core';
 
 import styles from '@Styles/AudioPlayer.module.sass';
 
-import { ITrack } from 'pages/tracks/types/track.type';
-
 import { TrackProgress } from 'components/TrackProgress';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 import { useActions } from 'hooks/useActions';
@@ -19,16 +17,6 @@ type TProps = {
 let audio: any;
 
 export const AudioPlayer: FC<TProps> | null = (): ReactElement | null => {
-  const track: ITrack = {
-    _id: '3',
-    name: 'Track 3',
-    artist: 'Artist 3',
-    text: 'Text 3',
-    picture: 'http://localhost:4500/image/0f8fc5b5-a7db-489c-a0a6-a81cb6e64a0f.gif',
-    audio: 'http://localhost:4500/audio/2af80cbf-5306-4095-a4c8-4038daea5781.mp4',
-    listens: 3,
-    comments: [],
-  };
 
   const {
     pause,
@@ -60,7 +48,7 @@ export const AudioPlayer: FC<TProps> | null = (): ReactElement | null => {
 
   useEffect(() => {
     if (!audio) {
-      audio = new Audio(track.audio);
+      audio = new Audio();
       audio.ontimeupdate = () => setCurrentTime(Math.ceil(audio.currentTime) || 0);
     }
     setAudio();

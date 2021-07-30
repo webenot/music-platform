@@ -59,7 +59,7 @@ const CreateTrack: FC = (): ReactElement => {
   }, [ activeStep ]);
 
   return (
-    <MainLayout>
+    <MainLayout title="Upload track">
       {uploading && (
         <DisableScreen />
       )}
