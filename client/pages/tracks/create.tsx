@@ -67,17 +67,20 @@ const CreateTrack: FC = (): ReactElement => {
         {activeStep === 0 && (
           <Grid container direction="column">
             <TextField
-              {...name}
+              value={name.value}
+              onChange={name.onChange}
               label="Track name"
               className={styles.form__input}
             />
             <TextField
-              {...artist}
+              value={artist.value}
+              onChange={artist.onChange}
               label="Artist name"
               className={styles.form__input}
             />
             <TextField
-              {...text}
+              value={text.value}
+              onChange={text.onChange}
               className={styles.form__input}
               label="Track text"
               multiline
