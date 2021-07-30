@@ -1,30 +1,70 @@
-import React, { FC, ReactElement } from 'react';
+import React, { FC, ReactElement, useCallback, useState } from 'react';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Button, Grid, TextField, Divider } from '@material-ui/core';
 
 import styles from '@Styles/[id].module.sass';
 
 import { MainLayout } from 'layouts/MainLayout';
-import { ITrack } from 'pages/tracks/types/track.type';
+import { IComment, ITrack } from 'pages/tracks/types/track.type';
+import { useInput } from 'hooks/useInput';
+import { CommentsList } from 'components/CommentsList';
 
 type TProps = {
   children?: never;
+  serverTrack: ITrack;
 }
 
-const TrackDetails: FC<TProps> = (): ReactElement => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+
+  try {
+    const response = await fetch(`http://localhost:4500/tracks/${params.id}`);
+    const result: ITrack = await response.json();
+    return { props: { serverTrack: result } };
+  } catch (e) {
+    console.error(e);
+    return { props: { serverTrack: {} } };
+  }
+};
+
+const TrackDetails: FC<TProps> = ({ serverTrack }: TProps): ReactElement => {
+
+  const [ track, setTrack ] = useState<ITrack>(serverTrack);
+  const [ adding, setAdding ] = useState<boolean>(false);
 
   const router = useRouter();
 
-  const track: ITrack = {
-    _id: '3',
-    name: 'Track 3',
-    artist: 'Artist 3',
-    text: 'Text 3',
-    picture: 'http://localhost:4500/image/0f8fc5b5-a7db-489c-a0a6-a81cb6e64a0f.gif',
-    audio: 'http://localhost:4500/audio/2af80cbf-5306-4095-a4c8-4038daea5781.mp4',
-    listens: 3,
-    comments: [],
-  };
+  const username = useInput('');
+  const text = useInput('');
+
+  const addCommentHandler = useCallback(async () => {
+    setAdding(true);
+    try {
+      const response = await fetch(
+        'http://localhost:4500/tracks/comment',
+        {
+          body: JSON.stringify({
+            username: username.value,
+            text: text.value,
+            track: track._id,
+          }),
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+      const result: IComment = await response.json();
+      setTrack({
+        ...track,
+        comments: [ ...track.comments, result ],
+      });
+      username.setValue('');
+      text.setValue('');
+    } catch (e) {
+      console.error(e);
+    }
+    setAdding(false);
+  }, [ username, text, track ]);
+
   return (
     <MainLayout>
       <Button
@@ -41,7 +81,7 @@ const TrackDetails: FC<TProps> = (): ReactElement => {
             <div>
               <img
                 className={styles.track__image}
-                src={track.picture}
+                src={`http://localhost:4500/${track.picture}`}
                 alt={track.name}
               />
             </div>
@@ -60,29 +100,31 @@ const TrackDetails: FC<TProps> = (): ReactElement => {
         <h1>Comments</h1>
         <Grid container>
           <TextField
+            value={username.value}
+            onChange={username.onChange}
             label="Your name"
             fullWidth
             className={styles.comments__input}
+            disabled={adding}
           />
           <TextField
+            value={text.value}
+            onChange={text.onChange}
             label="Comment"
             fullWidth
             multiline
             rows={4}
             className={styles.comments__input}
+            disabled={adding}
           />
-          <Button type="button" variant="contained">Send</Button>
+          <Button
+            type="button"
+            variant="contained"
+            disabled={adding || (!username.value || !text.value)}
+            onClick={addCommentHandler}
+          >Send</Button>
         </Grid>
-        <div className={styles.comments__list}>
-          {track.comments.map(comment => (
-            <div
-              key={`comment-${comment._id}`}
-            >
-              <div>Author - {comment.username}</div>
-              <div>{comment.text}</div>
-            </div>
-          ))}
-        </div>
+        <CommentsList comments={track.comments} />
       </div>
     </MainLayout>
   );
