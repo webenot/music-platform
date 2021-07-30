@@ -31,6 +31,7 @@ export class TrackService {
 
   async getAll (count = 10, offset = 0): Promise<Track[]> {
     return await this.trackModel.find()
+      .sort({ _id: -1 })
       .skip(Number(offset))
       .limit(Number(count));
   }
